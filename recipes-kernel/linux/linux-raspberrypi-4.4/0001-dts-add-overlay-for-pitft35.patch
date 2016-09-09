@@ -1,0 +1,146 @@
+From 2cfa1661fedc8a761f50a51ccbe4be96cc52030e Mon Sep 17 00:00:00 2001
+From: Yusuke Mitsuki <mickey.happygolucky@gmail.com>
+Date: Thu, 8 Sep 2016 14:35:07 +0900
+Subject: [PATCH] dts: add overlay for pitft35
+
+---
+ arch/arm/boot/dts/overlays/Makefile                |   1 +
+ .../dts/overlays/pitft35-resistive-overlay.dts     | 115 +++++++++++++++++++++
+ 2 files changed, 116 insertions(+)
+ create mode 100644 arch/arm/boot/dts/overlays/pitft35-resistive-overlay.dts
+
+diff --git a/arch/arm/boot/dts/overlays/Makefile b/arch/arm/boot/dts/overlays/Makefile
+index f528bd4..8033293 100644
+--- a/arch/arm/boot/dts/overlays/Makefile
++++ b/arch/arm/boot/dts/overlays/Makefile
+@@ -58,6 +58,7 @@ dtbo-$(RPI_DT_OVERLAYS) += piscreen2r.dtbo
+ dtbo-$(RPI_DT_OVERLAYS) += pitft22.dtbo
+ dtbo-$(RPI_DT_OVERLAYS) += pitft28-capacitive.dtbo
+ dtbo-$(RPI_DT_OVERLAYS) += pitft28-resistive.dtbo
++dtbo-$(RPI_DT_OVERLAYS) += pitft35-resistive.dtbo
+ dtbo-$(RPI_DT_OVERLAYS) += pps-gpio.dtbo
+ dtbo-$(RPI_DT_OVERLAYS) += pwm.dtbo
+ dtbo-$(RPI_DT_OVERLAYS) += pwm-2chan.dtbo
+diff --git a/arch/arm/boot/dts/overlays/pitft35-resistive-overlay.dts b/arch/arm/boot/dts/overlays/pitft35-resistive-overlay.dts
+new file mode 100644
+index 0000000..14e2df5
+--- /dev/null
++++ b/arch/arm/boot/dts/overlays/pitft35-resistive-overlay.dts
+@@ -0,0 +1,115 @@
++/*
++ * Device Tree overlay for Adafruit PiTFT 3.5" resistive touch screen
++ *
++ */
++
++/dts-v1/;
++/plugin/;
++
++/ {
++	compatible = "brcm,bcm2835", "brcm,bcm2708", "brcm,bcm2709";
++
++	fragment@0 {
++		target = <&spi0>;
++		__overlay__ {
++			status = "okay";
++
++			spidev@0{
++				status = "disabled";
++			};
++
++			spidev@1{
++				status = "disabled";
++			};
++		};
++	};
++
++	fragment@1 {
++		target = <&gpio>;
++		__overlay__ {
++			pitft_pins: pitft_pins {
++				brcm,pins = <24 25>;
++				brcm,function = <0 1>; /* in out */
++				brcm,pull = <2 0>; /* pullup none */
++			};
++		};
++	};
++
++	fragment@2 {
++		target = <&spi0>;
++		__overlay__ {
++			/* needed to avoid dtc warning */
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			pitft: pitft@0{
++				compatible = "himax,hx8357d";
++				reg = <0>;
++				pinctrl-names = "default";
++				pinctrl-0 = <&pitft_pins>;
++
++				spi-max-frequency = <32000000>;
++				rotate = <90>;
++				fps = <25>;
++				bgr;
++				buswidth = <8>;
++				dc-gpios = <&gpio 25 0>;
++				debug = <0>;
++			};
++
++			pitft_ts@1 {
++				#address-cells = <1>;
++				#size-cells = <0>;
++				compatible = "st,stmpe610";
++				reg = <1>;
++
++				spi-max-frequency = <500000>;
++				irq-gpio = <&gpio 24 0x2>; /* IRQF_TRIGGER_FALLING */
++				interrupts = <24 2>; /* high-to-low edge triggered */
++				interrupt-parent = <&gpio>;
++				interrupt-controller;
++
++				stmpe_touchscreen {
++					compatible = "st,stmpe-ts";
++					st,sample-time = <4>;
++					st,mod-12b = <1>;
++					st,ref-sel = <0>;
++					st,adc-freq = <2>;
++					st,ave-ctrl = <3>;
++					st,touch-det-delay = <4>;
++					st,settling = <2>;
++					st,fraction-z = <7>;
++					st,i-drive = <0>;
++				};
++
++				stmpe_gpio: stmpe_gpio {
++					#gpio-cells = <2>;
++					compatible = "st,stmpe-gpio";
++					/*
++					 * only GPIO2 is wired/available
++					 * and it is wired to the backlight
++					 */
++					st,norequest-mask = <0x7b>;
++				};
++			};
++		};
++	};
++
++	fragment@3 {
++		target-path = "/soc";
++		__overlay__ {
++			backlight {
++				compatible = "gpio-backlight";
++				gpios = <&stmpe_gpio 2 0>;
++				default-on;
++			};
++		};
++	};
++
++	__overrides__ {
++		speed =   <&pitft>,"spi-max-frequency:0";
++		rotate =  <&pitft>,"rotate:0";
++		fps =     <&pitft>,"fps:0";
++		debug =   <&pitft>,"debug:0";
++	};
++};
+-- 
+1.9.1
