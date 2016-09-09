@@ -1,6 +1,6 @@
 # Summary
 
-meta-pitft35-rpi support to work [PiTFT3.5](https://learn.adafruit.com/adafruit-pitft-3-dot-5-touch-screen-for-raspberry-pi) on RPi/RPi2.(Kernel 3.18.x)
+meta-pitft35-rpi support to work [PiTFT3.5](https://learn.adafruit.com/adafruit-pitft-3-dot-5-touch-screen-for-raspberry-pi) on RPi/RPi2/RPi3.
 
 Back porting [HX8357D driver](https://github.com/torvalds/linux/commit/9cd491e8c390d403bdf881808ef409d83266f4b2) to
 meta-raspberrypi kernel.
