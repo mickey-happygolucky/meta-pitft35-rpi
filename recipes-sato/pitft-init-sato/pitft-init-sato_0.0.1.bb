@@ -29,7 +29,6 @@ do_install () {
 	echo 'Section	"InputClass"' > ${D}${sysconfdir}/X11/xorg.conf.d/99-calibration.conf
 	echo '		Identifier		"calibration"' >> ${D}${sysconfdir}/X11/xorg.conf.d/99-calibration.conf
 	echo '		MatchProduct	"stmpe-ts"' >> ${D}${sysconfdir}/X11/xorg.conf.d/99-calibration.conf
-	echo '		Option	"Calibration"	"3800 120 200 3900"' >> ${D}${sysconfdir}/X11/xorg.conf.d/99-calibration.conf
 	echo '		Option	"SwapAxes"		"1"' >> ${D}${sysconfdir}/X11/xorg.conf.d/99-calibration.conf
 	echo '		Option	"InvertX"		"true"' >> ${D}${sysconfdir}/X11/xorg.conf.d/99-calibration.conf
 	echo '		Option	"InvertY"		"true"' >> ${D}${sysconfdir}/X11/xorg.conf.d/99-calibration.conf

@@ -1,1 +1,3 @@
-IMAGE_INSTALL_append = " pitft-init-sato"
+IMAGE_INSTALL_append = " \
+					 pitft-init-sato \
+					 xinput-calibrator"
