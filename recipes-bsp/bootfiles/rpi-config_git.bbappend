@@ -1,7 +1,7 @@
-do_deploy_pitft35() {
+RPI_PITFT35 ?= ""
 
-# hifiberry DAC
-    if [ -n "${RPI_PITFT35}" ]; then
+do_deploy_pitft35() {
+    if [ "${RPI_PITFT35}" = "1" ]; then
         echo "# Enable PiTFT 3.5 Display" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
         echo "dtoverlay=pitft35-resistive" >>${DEPLOYDIR}/bcm2835-bootfiles/config.txt
     fi
