@@ -1,4 +1,4 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
+FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}-3.18:"
 
 SRC_URI += "file://support_rpi_pitft35.patch \
 	"
