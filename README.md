@@ -21,10 +21,20 @@ revision: HEAD
 
 You can use PiTFT3.5 with this layer.
 
-If you want to use PiTFT3.5, edit your local.conf and add the line as follows:
+## for kernel 4.1/4.4
+
+In order to use PiTFT3.5, edit your local.conf and add the line as follows:
 
 ```
 RPI_PITFT35 = "1"
+KERNEL_DEVICETREE_append = " overlays/pitft35-resistive-overlay.dtb"
+```
 
+## for kernel 3.18
+
+In order to use PiTFT3.5, edit your local.conf and add the line as follows:
+
+```
+RPI_PITFT35 = "1"
 KERNEL_DEVICETREE_append = " pitft35-resistive-overlay.dtb"
 ```
